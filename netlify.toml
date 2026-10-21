@@ -1,0 +1,23 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+  included_files = ["backend/data/movies-demo.csv"]
+
+[[redirects]]
+  from = "/api/movies"
+  to = "/.netlify/functions/movies"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[dev]
+  command = "npm run dev"
+  targetPort = 5173
+  port = 8888

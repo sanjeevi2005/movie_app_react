@@ -1,5 +1,14 @@
 {
+    "functions": {
+        "api/movies.js": {
+            "includeFiles": "backend/data/movies-demo.csv"
+        }
+    },
     "rewrites": [
+        {
+            "source": "/api/movies",
+            "destination": "/api/movies.js"
+        },
         {
             "source": "/(.*)",
             "destination": "/index.html"

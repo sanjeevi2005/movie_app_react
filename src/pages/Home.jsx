@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import MovieCard from "../components/MovieCard";
 
-const API_BASE_URL = (
-    import.meta.env.VITE_API_URL || "http://localhost:5000"
-).replace(/\/+$/, "");
-
 function Home({ watchlist = [], onToggleWatchlist }) {
     // const movies = [
     //     {
@@ -80,7 +76,7 @@ function Home({ watchlist = [], onToggleWatchlist }) {
                 search: searchTerm,
             });
 
-            fetch(`${API_BASE_URL}/api/movies?${params}`)
+            fetch(`/api/movies?${params}`)
                 .then((res) => {
                     if (!res.ok) {
                         throw new Error(

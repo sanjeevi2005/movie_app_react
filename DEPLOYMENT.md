@@ -1,35 +1,49 @@
-# Demo Deployment
+# Deploy to Netlify or Vercel
 
-This setup deploys the Vite frontend to Vercel and the Express API to Render. The backend serves the 5,000-row file at `backend/data/movies-demo.csv`; the original 670 MB source file is not required in the deployed service.
+The frontend and movie API deploy together on either host. Each platform uses a serverless function backed by the shared handler and included 5,000-row demo CSV. The original 670 MB CSV is not required.
 
-## Prepare the demo data
+## Confirm the demo data is present
 
-From the repository root, run:
+`backend/data/movies-demo.csv` is already generated and committed. To recreate it from the original source file, run this from the repository root:
 
 ```powershell
 npm --prefix backend run prepare:demo-data -- 5000
 ```
 
-The generated CSV is included in the repository. The original source CSV is excluded by `.gitignore`.
+## Deploy to Netlify
 
-## Deploy the API to Render
+1. Sign in to [Netlify](https://app.netlify.com/) and select **Add new site** then **Import an existing project**.
+2. Choose GitHub and select `sanjeevi2005/movie_app_react`.
+3. Netlify reads `netlify.toml`. Confirm the build command is `npm run build` and publish directory is `dist`.
+4. Select **Deploy**. No API URL or CORS environment variables are required; `/api/movies` routes to the Netlify Function on the same site.
+5. Confirm the deployed site loads movies. Test search, pagination, and `/watchlist`, including refreshing that route directly.
 
-1. Push the project to a Git repository and create a Render Blueprint from it, or create a Web Service manually.
-2. For a manual service, set the root directory to `backend`, build command to `npm install`, and start command to `npm start`.
-3. Set the `FRONTEND_ORIGIN` environment variable to the exact deployed Vercel origin, such as `https://your-project.vercel.app`. Leave `MOVIES_CSV_PATH` unset to use the included demo CSV.
-4. After deployment, verify `https://<render-service>.onrender.com/health` returns `{"status":"ok"}`.
+## Deploy to Vercel
 
-The root `render.yaml` contains the equivalent service configuration.
+1. Sign in to [Vercel](https://vercel.com/) and select **Add New → Project**.
+2. Import the GitHub repository `sanjeevi2005/movie_app_react`.
+3. Keep the project root as the repository root. Use framework preset **Vite**, build command `npm run build`, and output directory `dist`.
+4. Deploy. `vercel.json` includes the demo CSV in the API function, rewrites `/api/movies` to the Vercel Function, and serves direct SPA routes such as `/watchlist`.
+5. Test search, pagination, saved movies, and refreshing `/watchlist`. No backend URL or CORS configuration is needed.
 
-## Deploy the frontend to Vercel
+## Local development
 
-1. Import the same repository into Vercel and keep the project root at the repository root.
-2. Set the `VITE_API_URL` environment variable to the Render service origin, for example `https://your-api.onrender.com` (no `/api/movies` suffix).
-3. Build command: `npm run build`. Output directory: `dist`.
-4. Deploy, then test the home page and `/watchlist`. `vercel.json` routes direct SPA URLs back to `index.html`.
+Install dependencies and start the Express API:
 
-For local development, omit `VITE_API_URL`; the frontend defaults to `http://localhost:5000`.
+```powershell
+npm install
+npm --prefix backend install
+npm --prefix backend start
+```
 
-## Limitations
+In another terminal, run the Vite frontend:
 
-The demo dataset includes only the first 5,000 source rows. Increase the number when generating it if needed, but keep the resulting file within your hosting and Git limits. The watchlist uses browser `localStorage`, so it is local to each browser and does not sync between devices.
+```powershell
+npm run dev
+```
+
+Vite proxies `/api` to the local Express server at `http://localhost:5000`. To test the Netlify Function locally, run `npx netlify dev`. To test the Vercel Function locally, install the Vercel CLI and run `vercel dev`.
+
+## Data and watchlist notes
+
+The demo API includes the first 5,000 movies. The function loads and parses this small CSV for each invocation; use a database if you later deploy the full dataset or need higher traffic. The watchlist is stored in browser `localStorage`, so it persists in that browser but does not sync across devices.
