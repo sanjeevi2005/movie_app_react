@@ -1,6 +1,6 @@
-# Deploy to Netlify or Vercel
+# Deploy to Vercel
 
-The frontend and movie API deploy together on either host. Each platform uses a serverless function backed by the shared handler and included 5,000-row demo CSV. The original 670 MB CSV is not required.
+The frontend and movie API deploy together as one Vercel project. The API uses a Vercel Function backed by the shared handler and included 5,000-row demo CSV. The original 670 MB CSV is not required.
 
 ## Confirm the demo data is present
 
@@ -9,14 +9,6 @@ The frontend and movie API deploy together on either host. Each platform uses a 
 ```powershell
 npm --prefix backend run prepare:demo-data -- 5000
 ```
-
-## Deploy to Netlify
-
-1. Sign in to [Netlify](https://app.netlify.com/) and select **Add new site** then **Import an existing project**.
-2. Choose GitHub and select `sanjeevi2005/movie_app_react`.
-3. Netlify reads `netlify.toml`. Confirm the build command is `npm run build` and publish directory is `dist`.
-4. Select **Deploy**. No API URL or CORS environment variables are required; `/api/movies` routes to the Netlify Function on the same site.
-5. Confirm the deployed site loads movies. Test search, pagination, and `/watchlist`, including refreshing that route directly.
 
 ## Deploy to Vercel
 
@@ -42,7 +34,7 @@ In another terminal, run the Vite frontend:
 npm run dev
 ```
 
-Vite proxies `/api` to the local Express server at `http://localhost:5000`. To test the Netlify Function locally, run `npx netlify dev`. To test the Vercel Function locally, install the Vercel CLI and run `vercel dev`.
+Vite proxies `/api` to the local Express server at `http://localhost:5000`. To test the Vercel Function locally, install the Vercel CLI and run `vercel dev`.
 
 ## Data and watchlist notes
 
